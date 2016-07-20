@@ -13,7 +13,7 @@ describe Executor::Future do
 
     it 'raises exception if task returns error' do
       @task = Executor::Task.new(Proc.new{ raise Exception })
-      @task.run
+      ignore { @task.run }
       expect {subject.get}.to raise_exception(Exception)
     end
 

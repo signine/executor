@@ -32,10 +32,20 @@ describe Executor::Task do
     context 'when task raises exception' do
       let(:exception) { StandardError.new }
       subject { Executor::Task.new Proc.new { raise exception } }
-      before { subject.run }
 
-      it('stores exception from task') { expect(subject.error).to eq(exception) }
-      it('sets state to error') { expect(subject.error?).to eq(true) }
+      it 'propagates exception' do
+        expect { subject.run }.to raise_exception(exception)
+      end
+
+      it 'stores exception from task' do
+        ignore { subject.run }
+        expect(subject.error).to eq(exception)
+      end
+
+      it 'sets state to error' do
+        ignore { subject.run }
+        expect(subject.error?).to eq(true)
+      end
     end
   end
 
@@ -61,7 +71,8 @@ describe Executor::Task do
     it 'returns true if task finished with error' do
       p = Proc.new { raise StandardError.new }
       s = Executor::Task.new(p)
-      s.run
+
+      ignore { s.run }
       expect(s.completed?).to eq(true)
     end
   end

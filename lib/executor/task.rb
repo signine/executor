@@ -1,4 +1,5 @@
 require 'thread'
+require_relative 'future'
 
 module Executor
   class Task
@@ -39,6 +40,7 @@ module Executor
         rescue Exception => e
           change_to STATE[:error]
           @error = e
+          raise e
         ensure
           cv.broadcast
         end

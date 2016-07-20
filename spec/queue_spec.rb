@@ -37,7 +37,7 @@ describe Executor::Queue do
       [1, 2].each { |i| subject.push(i) }
       subject.shutdown
       2.times { subject.pop }
-      expect { subject.pop }.to raise_exception Executor::Queue::ShutdownException
+      expect { subject.pop }.to raise_exception Executor::Shutdown
     end
   end
 

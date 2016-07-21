@@ -1,7 +1,3 @@
-require_relative 'task'
-require_relative 'queue'
-require_relative '../executor'
-
 module Executor
   class ThreadPool
     def initialize size
@@ -9,7 +5,7 @@ module Executor
       @queue       = Queue.new
       @cv          = ConditionVariable.new
       @death_mutex = Mutex.new
-      
+
       fork_threads
     end
 
@@ -37,7 +33,6 @@ module Executor
       shutdown? && @queue.empty?
     end
 
-    # TODO: Refactor this
     def await_termination timeout=nil
       raise StandardError, "Executor has not been shutdown" unless shutdown?
 
@@ -58,7 +53,6 @@ module Executor
             rescue Shutdown
               break
             rescue Exception => e
-              puts 'in here'
               puts e.message
               puts e.backtrace
             end

@@ -1,34 +1,54 @@
 # Executor
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/executor`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
-## Installation
-
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'executor'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install executor
+This is a library for using threads with a similar interface to Java's ExecutorService.
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+require 'executor'
+```
 
-## Development
+### ThreadPool
+Create a pre-forked thread pool with 4 threads
+```ruby
+pool = Executor::ThreadPool.new(4)
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+Submit tasks
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+future = pool.submit do
+  puts "Working..."
+  1 + 1
+end
+```
+Get the result. This blocks until the result is ready
+```ruby
+puts future.get
+# 2
+```
+Shutdown thread pool and wait for completion of all tasks
+```ruby
+pool.shutdown
+pool.await_termination
+```
+Shutdown thread pool immediately and return the list of tasks waiting execution
+```ruby
+pool.shutdown!
+```
+
+### Worker
+Create a pre-forked thread pool that executes the given block but with arguments given by calling `submit`
+
+```ruby
+worker = Executor::Worker(4) do |arg1, arg2|
+  arg1 + arg2
+end
+
+future = worker.submit(10, 20)
+puts future.get
+# 30
+```
 
 ## Contributing
 
@@ -38,4 +58,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

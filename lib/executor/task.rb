@@ -1,6 +1,3 @@
-require 'thread'
-require_relative 'future'
-
 module Executor
   class Task
 

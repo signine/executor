@@ -1,5 +1,3 @@
-require_relative '../executor'
-
 module Executor
   class Queue
 
